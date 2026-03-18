@@ -56,15 +56,16 @@ export function BookingForm() {
 
       toast.success("Booking submitted successfully! We will contact you soon.");
       reset();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Submission Error Response:", error);
-      toast.error(error.message || "Something went wrong. Please try again.");
+      const errorMessage = error instanceof Error ? error.message : "Something went wrong. Please try again.";
+      toast.error(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const onError = (formErrors: any) => {
+  const onError = (formErrors: unknown) => {
     console.error("Form Validation Errors:", formErrors);
     toast.error("Please correctly fill out all required fields.");
   };
