@@ -48,10 +48,18 @@ export function BookingForm() {
         body: JSON.stringify(data),
       });
 
-      const responseData = await response.json();
+      let responseData;
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.indexOf("application/json") !== -1) {
+        responseData = await response.json();
+      } else {
+        const text = await response.text();
+        console.error("Non-JSON Response:", text);
+        throw new Error("Server returned an invalid response. This is usually due to a timeout or missing environment variables on Vercel.");
+      }
 
       if (!response.ok) {
-        throw new Error(responseData.message || "Failed to submit booking");
+        throw new Error(responseData?.message || "Failed to submit booking");
       }
 
       toast.success("Booking submitted successfully! We will contact you soon.");
