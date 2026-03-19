@@ -7,7 +7,12 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     console.log("=== API /book HIT ===");
-    console.log("Incoming Payload:", body);
+    console.log("Raw Request Body:", body);
+    
+    // Log each field name and typeof value
+    for (const [key, value] of Object.entries(body)) {
+      console.log(`Field: ${key}, Type: ${typeof value}, Value:`, value);
+    }
 
     // 1. Zod Validation
     const parsed = bookingFormSchema.safeParse(body);
@@ -30,8 +35,8 @@ export async function POST(req: Request) {
       ? specificStudioItem?.name || "Unknown"
       : "N/A";
 
-    const selectedPackageItem = data.selectedPackageId
-      ? specificStudioItem?.packages.find((p) => p.id === data.selectedPackageId)
+    const selectedPackageItem = data.selectedPackage
+      ? specificStudioItem?.packages.find((p) => p.id === data.selectedPackage)
       : null;
 
     const packageLabel = selectedPackageItem

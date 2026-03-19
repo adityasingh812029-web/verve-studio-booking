@@ -24,12 +24,12 @@ export function BookingForm() {
       fullName: "",
       phoneNumber: "",
       email: "",
-      bookingType: undefined,
+      bookingType: "",
       specificStudio: "",
-      selectedPackageId: "",
+      selectedPackage: "",
       date: "",
       time: "",
-      agreedToTerms: false,
+      termsAccepted: false,
     },
   });
 
@@ -47,10 +47,18 @@ export function BookingForm() {
     const timeoutId = setTimeout(() => controller.abort(), 9000);
 
     try {
+      // Ensure boolean typing and correct string shapes for API
+      const payload = {
+        ...data,
+        termsAccepted: Boolean(data.termsAccepted),
+        specificStudio: data.specificStudio || undefined,
+        selectedPackage: data.selectedPackage || undefined,
+      };
+
       const response = await fetch("/api/book", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
         signal: controller.signal
       });
       clearTimeout(timeoutId);
@@ -208,7 +216,7 @@ export function BookingForm() {
                         <input
                           type="radio"
                           value={pkg.id}
-                          {...register("selectedPackageId")}
+                          {...register("selectedPackage")}
                           disabled={isSubmitting}
                           className="mt-1 min-w-[16px] w-4 h-4 text-white focus:ring-white/20 bg-black border-gray-600 cursor-pointer"
                         />
@@ -220,8 +228,8 @@ export function BookingForm() {
                     )
                   )}
                 </div>
-                {errors.selectedPackageId && (
-                  <p className="text-red-400 text-xs mt-2">{errors.selectedPackageId.message}</p>
+                {errors.selectedPackage && (
+                  <p className="text-red-400 text-xs mt-2">{errors.selectedPackage.message}</p>
                 )}
               </div>
             )}
@@ -263,7 +271,7 @@ export function BookingForm() {
       {/* Terms & Conditions */}
       <div className="flex items-start space-x-3 pt-4 relative z-10">
         <input
-          {...register("agreedToTerms")}
+          {...register("termsAccepted")}
           disabled={isSubmitting}
           type="checkbox"
           id="terms"
@@ -281,8 +289,8 @@ export function BookingForm() {
               Terms & Conditions
             </a>
           </label>
-          {errors.agreedToTerms && (
-            <p className="text-red-400 text-xs mt-1">{errors.agreedToTerms.message}</p>
+          {errors.termsAccepted && (
+            <p className="text-red-400 text-xs mt-1">{errors.termsAccepted.message}</p>
           )}
         </div>
       </div>
