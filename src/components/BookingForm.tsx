@@ -11,6 +11,7 @@ import { BOOKING_TYPES, SPECIFIC_STUDIOS, CONFIG } from "@/config/data";
 
 export function BookingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const {
     register,
@@ -78,6 +79,7 @@ export function BookingForm() {
       }
 
       toast.success("Booking submitted successfully! We will contact you soon.");
+      setIsSuccess(true);
       reset();
     } catch (error: unknown) {
       clearTimeout(timeoutId);
@@ -102,6 +104,29 @@ export function BookingForm() {
     console.error("Form Validation Errors:", formErrors);
     toast.error("Please correctly fill out all required fields.");
   };
+
+  if (isSuccess) {
+    return (
+      <div className="bg-[#111] border border-white/10 rounded-2xl p-8 md:p-12 text-center space-y-6 shadow-2xl flex flex-col items-center justify-center min-h-[400px] animate-in fade-in zoom-in-95 duration-500">
+        <div className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mb-2">
+          <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+        <h3 className="text-3xl font-bold text-white tracking-tight">Booking Request Sent</h3>
+        <p className="text-gray-400 text-lg max-w-sm mx-auto leading-relaxed">
+          Thank you! Your booking request has been submitted successfully. Our team will contact you shortly.
+        </p>
+        <button
+          onClick={() => setIsSuccess(false)}
+          type="button"
+          className="mt-8 px-8 py-3 bg-white text-black font-semibold rounded-xl hover:bg-gray-200 transition-colors"
+        >
+          Book Another Session
+        </button>
+      </div>
+    );
+  }
 
   return (
     <form
